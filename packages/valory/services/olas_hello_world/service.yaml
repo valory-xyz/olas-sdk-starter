@@ -5,9 +5,9 @@ description: This is my awesome hello world service.
 aea_version: '>=1.0.0, <2.0.0'
 license: Apache-2.0
 fingerprint:
-  README.md: bafybeiapubcoersqnsnh3acia5hd7otzt7kjxekr6gkbrlumv6tkajl6jm
+  README.md: bafybeicmvz2p3kg37kma45bztfxyo5hvkgatiop2ld4inxvdqwvalwli7u
 fingerprint_ignore_patterns: []
-agent: valory/olas_hello_world:0.1.0:bafybeigh54vwypnmvrcyphwhzshr6ubunrbggwm5dekdbohiww6on5opsq
+agent: valory/olas_hello_world:0.1.0:bafybeidwz637ctzht5nknmwt3p4cvybma3tdgqjfv5hj4s7awvlrliw7aa
 number_of_agents: 1
 deployment: {}
 ---
@@ -20,9 +20,5 @@ config:
       chain_id: ${GNOSIS_CHAIN_ID:int:100}
       poa_chain: ${IS_POA_CHAIN:bool:false}
       default_gas_price_strategy: ${DEFAULT_GAS_PRICE_STRATEGY:str:eip1559}
----
-public_id: valory/configs:0.19.0
-type: connection
-config:
-  MY_API_KEY: ${MY_API_KEY:str:yyyyyyyy}
-  SAFE_CONTRACT_ADDRESSES: ${SAFE_CONTRACT_ADDRESSES:str:0x0000000000000000000000000000000000000000}
+  my_api_key: ${MY_API_KEY:str:yyyyyyyy}
+  safe_contract_addresses: ${SAFE_CONTRACT_ADDRESSES:str:{}}
