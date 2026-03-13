@@ -19,15 +19,17 @@
 # ------------------------------------------------------------------------------
 
 """This CLI tool freezes the dependencies."""
+
 import argparse
 import re
 import subprocess  # nosec
+from pathlib import Path
 
 
 def parse_args() -> argparse.Namespace:
     """Parse CLI arguments."""
     parser = argparse.ArgumentParser("freeze_dependencies")
-    parser.add_argument("-o", "--output", type=argparse.FileType("w"), default=None)
+    parser.add_argument("-o", "--output", type=Path, default=None)
     return parser.parse_args()
 
 
@@ -37,7 +39,7 @@ if __name__ == "__main__":
     pip_freeze_call = subprocess.Popen(  # nosec  # pylint: disable=consider-using-with
         ["pip", "freeze"], stdout=subprocess.PIPE
     )
-    (stdout, stderr) = pip_freeze_call.communicate()
+    stdout, stderr = pip_freeze_call.communicate()
     requirements = stdout.decode("utf-8")
 
     # remove 'open-autonomy' itself

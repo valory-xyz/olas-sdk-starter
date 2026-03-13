@@ -2,12 +2,12 @@ name: olas_hello_world
 author: valory
 version: 0.1.0
 description: This is my awesome hello world service.
-aea_version: '>=1.0.0, <2.0.0'
+aea_version: '>=2.0.0, <3.0.0'
 license: Apache-2.0
 fingerprint:
   README.md: bafybeicmvz2p3kg37kma45bztfxyo5hvkgatiop2ld4inxvdqwvalwli7u
 fingerprint_ignore_patterns: []
-agent: valory/olas_hello_world:0.1.0:bafybeidwz637ctzht5nknmwt3p4cvybma3tdgqjfv5hj4s7awvlrliw7aa
+agent: valory/olas_hello_world:0.1.0:bafybeifocndkrnmb7xly4rkbhxrdcf3kqfqopysq53hj7w7gbthbzfhysy
 number_of_agents: 1
 deployment: {}
 ---
@@ -15,10 +15,40 @@ public_id: valory/ledger:0.19.0
 type: connection
 config:
   ledger_apis:
+    ethereum:
+      address: ${ETHEREUM_LEDGER_RPC:str:https://eth.drpc.org}
+      chain_id: ${ETHEREUM_CHAIN_ID:int:1}
+      poa_chain: ${IS_POA_CHAIN:bool:false}
+      default_gas_price_strategy: ${DEFAULT_GAS_PRICE_STRATEGY:str:eip1559}
     gnosis:
-      address: ${GNOSIS_LEDGER_RPC:str:http://localhost:8545}
+      address: ${GNOSIS_LEDGER_RPC:str:https://rpc.gnosischain.com}
       chain_id: ${GNOSIS_CHAIN_ID:int:100}
       poa_chain: ${IS_POA_CHAIN:bool:false}
       default_gas_price_strategy: ${DEFAULT_GAS_PRICE_STRATEGY:str:eip1559}
-  my_api_key: ${MY_API_KEY:str:yyyyyyyy}
+    polygon:
+      address: ${POLYGON_LEDGER_RPC:str:https://polygon-rpc.com}
+      chain_id: ${POLYGON_CHAIN_ID:int:137}
+      poa_chain: ${IS_POA_CHAIN:bool:true}
+      default_gas_price_strategy: ${DEFAULT_GAS_PRICE_STRATEGY:str:eip1559}
+    base:
+      address: ${BASE_LEDGER_RPC:str:https://mainnet.base.org}
+      chain_id: ${BASE_CHAIN_ID:int:8453}
+      poa_chain: ${IS_POA_CHAIN:bool:false}
+      default_gas_price_strategy: ${DEFAULT_GAS_PRICE_STRATEGY:str:eip1559}
+    optimism:
+      address: ${OPTIMISM_LEDGER_RPC:str:https://mainnet.optimism.io}
+      chain_id: ${OPTIMISM_CHAIN_ID:int:10}
+      poa_chain: ${IS_POA_CHAIN:bool:true}
+      default_gas_price_strategy: ${DEFAULT_GAS_PRICE_STRATEGY:str:eip1559}
+    celo:
+      address: ${CELO_LEDGER_RPC:str:https://forno.celo.org}
+      chain_id: ${CELO_CHAIN_ID:int:42220}
+      poa_chain: ${IS_POA_CHAIN:bool:false}
+      default_gas_price_strategy: ${DEFAULT_GAS_PRICE_STRATEGY:str:eip1559}
+---
+public_id: valory/configs:0.1.0
+type: connection
+config:
   safe_contract_addresses: ${SAFE_CONTRACT_ADDRESSES:str:{}}
+  store_path: ${STORE_PATH:str:./data}
+  my_api_key: ${MY_API_KEY:str:yyyyyyyy}

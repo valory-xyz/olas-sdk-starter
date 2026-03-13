@@ -4,11 +4,7 @@ SERVICE_ID := "${SERVICE_ID}"
 PLATFORM_STR := $(shell uname)
 
 .PHONY: clean
-clean: clean-test clean-pyc clean-docs
-
-.PHONY: clean-docs
-clean-docs:
-	rm -fr site/
+clean: clean-test clean-pyc
 
 .PHONY: clean-pyc
 clean-pyc:
@@ -85,30 +81,9 @@ new_env: clean
 	then\
 		pipenv --rm;\
 		pipenv --clear;\
-		pipenv --python 3.10;\
-		pipenv install --dev --skip-lock;\
-		pipenv run pip install -e .[all];\
+		pipenv --python 3.14;\
+		pipenv install --dev;\
 		echo "Enter virtual environment with all development dependencies now: 'pipenv shell'.";\
 	else\
 		echo "In a virtual environment! Exit first: 'exit'.";\
 	fi
-
-protolint_install:
-	mkdir protolint_install
-	cd protolint_install && \
-		wget https://github.com/yoheimuta/protolint/releases/download/v0.27.0/protolint_0.27.0_Linux_x86_64.tar.gz && \
-		tar -xvf protolint_0.27.0_Linux_x86_64.tar.gz && \
-		sudo mv protolint /usr/local/bin/protolint
-	sudo rm -rf protolint_install
-
-protolint_install_darwin:
-	mkdir protolint_install
-	cd protolint_install && \
-		wget https://github.com/yoheimuta/protolint/releases/download/v0.27.0/protolint_0.27.0_Darwin_x86_64.tar.gz && \
-		tar -xvf protolint_0.27.0_Darwin_x86_64.tar.gz && \
-		sudo mv protolint /usr/local/bin/protolint
-	sudo rm -rf protolint_install
-
-# TODO: use precompiled binary
-protolint_install_win:
-	powershell -command '$$env:GO111MODULE="on"; go install github.com/yoheimuta/protolint/cmd/protolint@v0.27.0'

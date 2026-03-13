@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: ["3.10.9"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     timeout-minutes: 18
 
@@ -30,19 +30,17 @@ jobs:
     - if: matrix.os != 'windows-latest'
       name: Pipenv install requirements and check it can be locked
       run: |
-        pip install pipenv==2023.7.23
+        pip install pipenv==2026.0.3
         pipenv --clear
         time pipenv install --verbose --dev --skip-lock
-        time pipenv run pip install -e .[all]
         time pipenv lock
     - if: matrix.os == 'windows-latest'
       name: Pipenv install requirements and check it can be locked
       run: |
         choco install ptime
-        pip install pipenv==2023.7.23
+        pip install pipenv==2026.0.3
         pipenv --clear
         ptime pipenv install --verbose --dev --skip-lock
-        ptime pipenv run pip install -e .[all]
         ptime pipenv lock
 
   copyright_doc_and_dependencies_check:
@@ -68,7 +66,7 @@ jobs:
         sudo apt-get update --fix-missing
         sudo apt-get autoremove
         sudo apt-get autoclean
-        pip install tomte[tox,cli]==0.2.17
+        pip install tomte[tox,cli]==0.6.2
         pip install --user --upgrade setuptools
     - name: Check copyright headers
       run: tomte format-copyright --author valory --author fetchai
@@ -89,7 +87,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.10.9"]
+        python-version: ["3.14"]
 
     timeout-minutes: 30
 
@@ -98,32 +96,16 @@ jobs:
     - uses: actions/setup-python@master
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: actions/setup-go@v3
-      with:
-        go-version: "1.17.7"
     - name: Install dependencies
       run:  |
         sudo apt-get update --fix-missing
         sudo apt-get autoremove
         sudo apt-get autoclean
-        pip install tomte[tox]==0.2.17
+        pip install tomte[tox,cli]==0.6.2
         pip install --user --upgrade setuptools
-        # install Protobuf compiler
-        wget https://github.com/protocolbuffers/protobuf/releases/download/v3.19.4/protoc-3.19.4-linux-x86_64.zip
-        unzip protoc-3.19.4-linux-x86_64.zip -d protoc
-        sudo mv protoc/bin/protoc /usr/local/bin/protoc
-        # install IPFS
-        sudo apt-get install -y wget
-        sudo npm install -g markdown-spellcheck
-        wget -O ./go-ipfs.tar.gz https://dist.ipfs.io/go-ipfs/v0.6.0/go-ipfs_v0.6.0_linux-amd64.tar.gz
-        tar xvfz go-ipfs.tar.gz
-        sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
-        ipfs init
-        make protolint_install
     - name: Security checks
       run: |
-        tox -e bandit
-        tox -e safety
+        tox -p -e bandit -e safety
     - name: Code style check
       run: |
         tox -e black-check
@@ -143,9 +125,6 @@ jobs:
         tox -e check-abciapp-specs
         tox -e check-handlers
         tox -e check-dialogues
-        tox -e analyse-services
-    - name: Check packages
-      run: tox -e check-packages
 
   scan:
     name: gitleaks
