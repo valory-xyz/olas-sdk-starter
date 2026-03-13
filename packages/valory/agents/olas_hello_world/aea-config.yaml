@@ -3,17 +3,14 @@ author: valory
 version: 0.1.0
 license: Apache-2.0
 description: This is my awesome olas hello world agent.
-aea_version: '>=1.0.0, <2.0.0'
+aea_version: '>=2.0.0, <3.0.0'
 fingerprint:
   README.md: bafybeigleiqurgfq6dfdlwhu2z77rtvnkfrge5kaglshj7c4ua6t5i4isy
   __init__.py: bafybeiel7sirsyxhznhhkn5eqsveusrafvobe263zkehyehigk6nan6ovu
 fingerprint_ignore_patterns: []
-skills:
-- valory/test_abci:0.1.0:bafybeifzrhsu7lhdcx6jidekt2oorei7cwo7rgickv77zwtxfmwh25iwra
+skills: []
 connections:
-- valory/ledger:0.19.0:bafybeig7woeog4srdby75hpjkmx4rhpkzncbf4h2pm5r6varsp26pf2uhu
-- valory/abci:0.1.0:bafybeicidr6u3w4vbalvrsfo4xraptxuti7cyrjlvqqn7udekxpm5hnho4
-- valory/p2p_libp2p_client:0.1.0:bafybeid3xg5k2ol5adflqloy75ibgljmol6xsvzvezebsg7oudxeeolz7e
+- valory/ledger:0.19.0:bafybeid5uwx4uqxkiibw6kazr7my5mk5kcqg2dx2owtcf7kcpbs2jrns2e
 contracts: []
 protocols: []
 customs: []
@@ -28,9 +25,9 @@ logging_config:
   version: 1
 dependencies:
   open-aea-ledger-cosmos:
-    version: ==1.63.0
+    version: ==2.1.0
   open-aea-ledger-ethereum:
-    version: ==1.63.0
+    version: ==2.1.0
 default_connection: null
 ---
 public_id: valory/ledger:0.19.0
@@ -42,52 +39,3 @@ config:
       chain_id: ${GNOSIS_CHAIN_ID:int:100}
       poa_chain: ${IS_POA_CHAIN:bool:false}
       default_gas_price_strategy: ${DEFAULT_GAS_PRICE_STRATEGY:str:eip1559}
-  my_api_key: ${MY_API_KEY:str:yyyyyyyy}
-  safe_contract_addresses: ${SAFE_CONTRACT_ADDRESSES:str:{}}
----
-public_id: valory/abci:0.1.0
-type: connection
-config:
-  target_skill_id: valory/test_abci:0.1.0
-  use_tendermint: ${USE_TENDERMINT:bool:false}
-  host: ${ABCI_HOST:str:localhost}
-  port: ${ABCI_PORT:int:26658}
----
-public_id: valory/test_abci:0.1.0
-type: skill
-models:
-  params:
-    args:
-      on_chain_service_id: ${ON_CHAIN_SERVICE_ID:int:0}
-      service_registry_address: ${SERVICE_REGISTRY_ADDRESS:str:""}
-      setup:
-        all_participants:
-        - '0x0000000000000000000000000000000000000000'
-        safe_contract_address: ${SAFE_CONTRACT_ADDRESS:str:0x0000000000000000000000000000000000000000}
-        consensus_threshold: ${CONSENSUS_THRESHOLD:int:1}
-      share_tm_config_on_startup: ${SHARE_TM_CONFIG_ON_STARTUP:str:false}
----
-public_id: valory/p2p_libp2p_client:0.1.0
-type: connection
-config:
-  nodes:
-  - uri: ${P2P_URI:str:acn.staging.autonolas.tech:9005}
-    public_key: ${P2P_PUBLIC_KEY:str:02d3a830c9d6ea1ae91936951430dee11f4662f33118b02190693be835359a9d77}
-  - uri: ${P2P_URI:str:acn.staging.autonolas.tech:9006}
-    public_key: ${P2P_PUBLIC_KEY:str:02e741c62d706e1dcf6986bf37fa74b98681bc32669623ac9ee6ff72488d4f59e8}
-cert_requests:
-- identifier: acn
-  ledger_id: ethereum
-  message_format: '{public_key}'
-  not_after: '2025-01-01'
-  not_before: '2024-01-01'
-  public_key: ${P2P_PUBLIC_KEY:str:02d3a830c9d6ea1ae91936951430dee11f4662f33118b02190693be835359a9d77}
-  save_path: .certs/acn_cosmos_9005.txt
-- identifier: acn
-  ledger_id: ethereum
-  message_format: '{public_key}'
-  not_after: '2025-01-01'
-  not_before: '2024-01-01'
-  public_key: ${P2P_PUBLIC_KEY:str:02e741c62d706e1dcf6986bf37fa74b98681bc32669623ac9ee6ff72488d4f59e8}
-  save_path: .certs/acn_cosmos_9006.txt
-is_abstract: true

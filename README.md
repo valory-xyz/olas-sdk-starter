@@ -25,10 +25,10 @@ Enter virtual environment:
 
 To execute your agent through Olas Quickstart you will need to build a docker image with your agent code and push it to [Docker Hub](https://hub.docker.com/) into a public repository, the docker image of your agent will need to follow a specific naming convention. 
 
-The steps to configure your agent will dictate where Olas Quickstart will look for your docker image, the docker namespace where this image will be hosted is your agent blueprint author, the image name will be the agent blueprint name and the tag will be the hash of your agent blueprint package. Follow the steps below to adjust configuration files with your agent blueprint's information:
+The steps to configure your agent will dictate where Olas Quickstart will look for your docker image, the docker namespace where this image will be hosted is your agent blueprint author, the image name will be the agent blueprint name (prefixed with `oar-`) and the tag will be the hash of your agent blueprint package. Follow the steps below to adjust configuration files with your agent blueprint's information:
 
 ### Adjust your agent blueprint configuration
-On `/packages/valory/agents/olas_hello_world/aea-config.yaml` adjust the fields:
+On [packages/valory/agents/olas_hello_world/aea-config.yaml](packages/valory/agents/olas_hello_world/aea-config.yaml) adjust the fields:
       
 - `agent_name` - The name of your agent blueprint, this will be the name of your agent blueprint image in [Docker Hub](https://hub.docker.com/).
       
@@ -38,14 +38,14 @@ On `/packages/valory/agents/olas_hello_world/aea-config.yaml` adjust the fields:
 
 ### Adjust your AI agent configuration
 
-On `packages/valory/services/olas_hello_world/service.yaml` adjust the fields:
+On [packages/valory/services/olas_hello_world/service.yaml](packages/valory/services/olas_hello_world/service.yaml) adjust the fields:
 - `name` - Use the same name as your agent blueprint
 
 - `author` - Use the same author as your agent blueprint
 
 - `agent` - Update this value with your agent blueprint information, you can leave the default hash value as it will be auto-generated later: <your_agent_blueprint_author>/<your_agent_blueprint_name>:0.1.0:<your_agent_blueprint_ipfs_hash>
 
-- `configs`: Under the configs field of the last section with public_id "valory/ledger:0.19.0" configure the environment variables that need to be present in your agent blueprint, the variables you define here will be setup when executing your agent blueprint instance through Olas Quickstart but they will contain the prefix `CONNECTION_LEDGER_CONFIG_` in their names.
+- `configs`: Under the configs field of the last section with public_id "valory/configs:0.1.0" configure the environment variables that need to be present in your agent blueprint, the variables you define here will be setup when executing your agent blueprint instance through Olas Quickstart but they will contain the prefix `CONNECTION_CONFIGS_CONFIG_` in their names, like `CONNECTION_CONFIGS_CONFIG_STORE_PATH`.
 
 ### Adjust folders
 Rename the packages folders by the values defined above:
@@ -62,7 +62,11 @@ Configure the Open Autonomy CLI:
 
 ## Publish your agent blueprint
 
-After configuring your agent blueprint and AI agent, you need to generate their package hashes and push them to IPFS, this will allow you to mint your agent blueprint at {{ autonolas_protocol_registry_dapp }} and execute it through Olas Quickstart.
+After configuring your agent blueprint and AI agent, you need to generate their package hashes and push them to IPFS, this will allow you to mint your agent blueprint at https://marketplace.olas.network/ and execute it through Olas Quickstart.
+
+Sync all the packages:
+
+      autonomy packages sync --update-packages
 
 Generate packages hashes:
 
