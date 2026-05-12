@@ -141,3 +141,21 @@ jobs:
           tar -xzf gitleaks_8.10.1_linux_x64.tar.gz && \
           sudo install gitleaks /usr/bin && \
           gitleaks detect --report-format json --report-path leak_report -v
+
+  all_checks_passed:
+    name: All checks passed
+    if: always()
+    needs:
+      - lock_check
+      - copyright_doc_and_dependencies_check
+      - linter_checks
+      - scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all required jobs succeeded
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "One or more required jobs failed or were cancelled."
+            exit 1
+          fi
+          echo "All required jobs succeeded."
