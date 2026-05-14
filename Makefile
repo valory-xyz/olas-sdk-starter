@@ -36,7 +36,7 @@ clean-cache:
 .PHONY: security
 security:
 	tox -p -e safety -e bandit
-	gitleaks detect --report-format json --report-path leak_report
+	tox -e gitleaks
 
 # generate abci docstrings
 # check copyright

@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-open-autonomy = {version = "==0.21.13", extras = ["all"]}
+open-autonomy = {version = "==0.21.21", extras = ["all"]}
 
 [dev-packages]
-tomte = {version = "==0.6.2", extras = ["tests", "cli"]}
+tomte = {version = "==0.7.0", extras = ["tests", "cli"]}
