@@ -191,6 +191,10 @@ def bump_pyproject(file: Path, dependencies: t.Dict[str, str]) -> None:
     Tracks the current TOML table header while walking the file so that
     matching entries in [dependency-groups] or [tool.uv].constraint-dependencies
     aren't rewritten by the same regex.
+
+    :param file: path to the pyproject.toml to update in place.
+    :param dependencies: mapping of package name to version specifier
+        (e.g. ``"==1.2.3"``) for packages to rewrite.
     """
     if not file.exists():
         return
