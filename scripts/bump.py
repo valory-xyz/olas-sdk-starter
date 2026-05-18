@@ -180,14 +180,43 @@ def get_dependencies() -> t.Dict:
     return dependencies
 
 
+_PROJECT_DEPS_OPEN_RE = re.compile(r"^\s*dependencies\s*=\s*\[\s*$")
+_TABLE_HEADER_RE = re.compile(r"^\s*\[(?P<name>[^\]]+)\]\s*$")
+_LIST_CLOSE_RE = re.compile(r"^\s*\]\s*$")
+
+
 def bump_pyproject(file: Path, dependencies: t.Dict[str, str]) -> None:
-    """Bump dependency versions in a pyproject.toml dependency-list literal."""
+    """Bump dependency versions inside [project].dependencies only.
+
+    Tracks the current TOML table header while walking the file so that
+    matching entries in [dependency-groups] or [tool.uv].constraint-dependencies
+    aren't rewritten by the same regex.
+    """
     if not file.exists():
         return
 
     _logger.info(f"Updating {file.name}")
     updated_lines = []
+    in_project_table = False
+    in_project_dependencies = False
     for line in file.read_text(encoding="utf-8").split("\n"):
+        header = _TABLE_HEADER_RE.match(line)
+        if header:
+            in_project_table = header.group("name").strip() == "project"
+            in_project_dependencies = False
+            updated_lines.append(line)
+            continue
+        if in_project_table and _PROJECT_DEPS_OPEN_RE.match(line):
+            in_project_dependencies = True
+            updated_lines.append(line)
+            continue
+        if in_project_dependencies and _LIST_CLOSE_RE.match(line):
+            in_project_dependencies = False
+            updated_lines.append(line)
+            continue
+        if not in_project_dependencies:
+            updated_lines.append(line)
+            continue
         match = PEP508_LINE_RE.match(line)
         if match is None:
             updated_lines.append(line)

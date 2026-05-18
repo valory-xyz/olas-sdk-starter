@@ -69,12 +69,6 @@ all-checks: clean security generators common-checks-1 common-checks-2
 
 .PHONY: new_env
 new_env: clean
-	if [ ! -z "$(shell which svn)" ];\
-	then\
-		echo "The development setup requires SVN, exit";\
-		exit 1;\
-	fi;\
-
 	if [ -z "$$VIRTUAL_ENV" ];\
 	then\
 		rm -rf .venv;\
