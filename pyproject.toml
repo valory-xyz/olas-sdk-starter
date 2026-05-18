@@ -17,3 +17,9 @@ dev = [
 [tool.uv]
 package = false
 prerelease = "allow"
+# Keep transitive httpx on the stable 0.x line so liccheck (which
+# installs the project as editable and re-resolves with prerelease
+# enabled) doesn't pick the dev release httpx==1.0.dev3 via solana.
+constraint-dependencies = [
+    "httpx<1.0",
+]
