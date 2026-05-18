@@ -23,7 +23,7 @@ Script for bumping core dependencies.
 This script
 
 - Fetches the latest core dependency versions from github
-- Updates the tox.ini, packages and Pipfile/pyproject.toml files
+- Updates the tox.ini, packages and pyproject.toml files
 - Performs the packages sync
 """
 
@@ -43,9 +43,14 @@ from aea.package_manager.v1 import PackageManagerV1
 from autonomy.cli.helpers.ipfs_hash import load_configuration
 
 BUMP_BRANCH = "chore/bump"
-PIPFILE = Path.cwd() / "Pipfile"
 PYPROJECT_TOML = Path.cwd() / "pyproject.toml"
 TOX_INI = Path.cwd() / "tox.ini"
+
+PEP508_LINE_RE = re.compile(
+    r'^(?P<indent>\s*)"(?P<name>[A-Za-z0-9_.-]+)'
+    r"(?P<extras>\[[^\]]+\])?"
+    r'(?P<version>[^"]*)"(?P<trailing>.*)$'
+)
 
 TAGS_URL = "https://api.github.com/repos/{repo}/tags"
 FILE_URL = "https://raw.githubusercontent.com/{repo}/{tag}/{file}"
@@ -175,30 +180,62 @@ def get_dependencies() -> t.Dict:
     return dependencies
 
 
-def bump_pipfile_or_pyproject(file: Path, dependencies: t.Dict[str, str]) -> None:
-    """Bump Pipfile."""
+_PROJECT_DEPS_OPEN_RE = re.compile(r"^\s*dependencies\s*=\s*\[\s*$")
+_TABLE_HEADER_RE = re.compile(r"^\s*\[(?P<name>[^\]]+)\]\s*$")
+_LIST_CLOSE_RE = re.compile(r"^\s*\]\s*$")
+
+
+def bump_pyproject(file: Path, dependencies: t.Dict[str, str]) -> None:
+    """Bump dependency versions inside [project].dependencies only.
+
+    Tracks the current TOML table header while walking the file so that
+    matching entries in [dependency-groups] or [tool.uv].constraint-dependencies
+    aren't rewritten by the same regex.
+
+    :param file: path to the pyproject.toml to update in place.
+    :param dependencies: mapping of package name to version specifier
+        (e.g. ``"==1.2.3"``) for packages to rewrite.
+    """
     if not file.exists():
         return
 
     _logger.info(f"Updating {file.name}")
-    updated = ""
-    content = file.read_text(encoding="utf-8")
-    for line in content.split("\n"):
-        try:
-            spec = Dependency.from_pipfile_string(line)
-            update = dependencies.get(spec.name)
-            if update is None:
-                updated += line + "\n"
-                continue
-            spec = Dependency(
-                name=spec.name,
-                version=update,
-                extras=spec.extras,
-            )
-            updated += spec.to_pipfile_string() + "\n"
-        except ValueError:
-            updated += line + "\n"
-    file.write_text(updated[:-1], encoding="utf-8")
+    updated_lines = []
+    in_project_table = False
+    in_project_dependencies = False
+    for line in file.read_text(encoding="utf-8").split("\n"):
+        header = _TABLE_HEADER_RE.match(line)
+        if header:
+            in_project_table = header.group("name").strip() == "project"
+            in_project_dependencies = False
+            updated_lines.append(line)
+            continue
+        if in_project_table and _PROJECT_DEPS_OPEN_RE.match(line):
+            in_project_dependencies = True
+            updated_lines.append(line)
+            continue
+        if in_project_dependencies and _LIST_CLOSE_RE.match(line):
+            in_project_dependencies = False
+            updated_lines.append(line)
+            continue
+        if not in_project_dependencies:
+            updated_lines.append(line)
+            continue
+        match = PEP508_LINE_RE.match(line)
+        if match is None:
+            updated_lines.append(line)
+            continue
+        name = match.group("name")
+        update = dependencies.get(name)
+        if update is None:
+            updated_lines.append(line)
+            continue
+        updated_lines.append(
+            f'{match.group("indent")}"{name}'
+            f'{match.group("extras") or ""}'
+            f'{update}"{match.group("trailing")}'
+        )
+    file.write_text("\n".join(updated_lines), encoding="utf-8")
 
 
 def bump_tox(dependencies: t.Dict[str, str]) -> None:
@@ -290,8 +327,7 @@ def main(
     dependencies.update(get_dependencies())
     dependencies.update({dep.name: dep.version for dep in extra or []})
 
-    bump_pipfile_or_pyproject(PIPFILE, dependencies=dependencies)
-    bump_pipfile_or_pyproject(PYPROJECT_TOML, dependencies=dependencies)
+    bump_pyproject(PYPROJECT_TOML, dependencies=dependencies)
     bump_tox(dependencies=dependencies)
     bump_packages(dependencies=dependencies)
     dump_git_cache()

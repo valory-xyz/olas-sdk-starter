@@ -24,24 +24,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@master
+    - uses: astral-sh/setup-uv@v6
       with:
         python-version: ${{ matrix.python-version }}
-    - if: matrix.os != 'windows-latest'
-      name: Pipenv install requirements and check it can be locked
-      run: |
-        pip install pipenv==2026.0.3
-        pipenv --clear
-        time pipenv install --verbose --dev --skip-lock
-        time pipenv lock
-    - if: matrix.os == 'windows-latest'
-      name: Pipenv install requirements and check it can be locked
-      run: |
-        choco install ptime
-        pip install pipenv==2026.0.3
-        pipenv --clear
-        ptime pipenv install --verbose --dev --skip-lock
-        ptime pipenv lock
+    - name: Check if dependencies can be locked
+      run: uv lock --check
+    - name: Install dependencies
+      run: uv sync --all-groups -v
 
   copyright_doc_and_dependencies_check:
     continue-on-error: False
@@ -58,16 +47,17 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - uses: actions/setup-python@master
+    - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+    - uses: astral-sh/setup-uv@v6
     - name: Install dependencies
       run:  |
         sudo apt-get update --fix-missing
         sudo apt-get autoremove
         sudo apt-get autoclean
-        pip install tomte[tox,cli]==0.7.0
-        pip install --user --upgrade setuptools
+        uv pip install --system tomte[tox,cli]==0.7.0 tox-uv
+        uv pip install --system --upgrade setuptools
     - name: Check copyright headers
       run: tomte format-copyright --author valory --author fetchai
     - name: License compatibility check
@@ -76,7 +66,7 @@ jobs:
     #   run: tox -e check-api-docs
     # - name: Check doc links
     #   run: tomte check-doc-links --http-skips http://host.docker.internal:8545 --http-skips http://www.fipa.org/repository/ips.php3 --url-skips "https://gateway.autonolas.tech/ipfs/<hash>," --url-skips "https://github.com/valory-xyz/open-autonomy/trunk/infrastructure" --url-skips "http://host.docker.internal:8545" --url-skips "https://github.com/valory-xyz/open-operator"
-    # TODO: Investigate and fix - Package open-aea-ledger-cosmos has version ==1.38.0 in Pipfile and  in packages.
+    # TODO: Investigate and fix - Package open-aea-ledger-cosmos has version ==1.38.0 in pyproject.toml and  in packages.
     # - name: Check dependencies
     #   run: tox -e check-dependencies
 
@@ -93,16 +83,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@master
+    - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+    - uses: astral-sh/setup-uv@v6
     - name: Install dependencies
       run:  |
         sudo apt-get update --fix-missing
         sudo apt-get autoremove
         sudo apt-get autoclean
-        pip install tomte[tox,cli]==0.7.0
-        pip install --user --upgrade setuptools
+        uv pip install --system tomte[tox,cli]==0.7.0 tox-uv
+        uv pip install --system --upgrade setuptools
     - name: Security checks
       run: |
         tox -p -e bandit -e safety
@@ -131,14 +122,15 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@master
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+      - uses: astral-sh/setup-uv@v6
       - run: |
           wget https://github.com/zricethezav/gitleaks/releases/download/v8.10.1/gitleaks_8.10.1_linux_x64.tar.gz
           tar -xzf gitleaks_8.10.1_linux_x64.tar.gz
           sudo install gitleaks /usr/bin
-          pip install tomte[tox]==0.7.0
+          uv pip install --system tomte[tox,cli]==0.7.0 tox-uv
           tox -e gitleaks
 
   all_checks_passed:
