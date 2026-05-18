@@ -4,8 +4,8 @@ Example of minimum configuration files needed in order to deploy an autonomous a
 
 ## System requirements
 
-- Python `>=3.10`
-- [Pipenv](https://pipenv.pypa.io/en/latest/installation/) `>=2021.x.xx`
+- Python `>=3.10,<3.15`
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 ## Prepare the environment
 
@@ -18,8 +18,8 @@ Create development environment:
       make new_env
 
 Enter virtual environment:
-      
-      pipenv shell
+
+      source .venv/bin/activate
 
 ## Configure your agent
 

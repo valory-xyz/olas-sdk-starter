@@ -18,7 +18,7 @@
 #
 # ------------------------------------------------------------------------------
 """
-This script checks that the pipfile of the repository meets the requirements.
+This script checks that the project's pyproject.toml meets the requirements.
 
 In particular:
 - Avoid the usage of "*"
@@ -27,6 +27,7 @@ It is assumed the script is run from the repository root.
 """
 
 import os
+import re
 import subprocess  # nosec
 import sys
 from pathlib import Path
@@ -37,17 +38,36 @@ from aea.configurations.data_types import Dependency, PackageType
 from aea.package_manager.base import load_configuration
 from aea.package_manager.v1 import PackageManagerV1
 
+_PEP508_RE = re.compile(r"^([A-Za-z0-9_.-]+)(?:\[([^\]]+)\])?(.*)$")
 
-def load_pipfile(pipfile_path: str = "./Pipfile") -> dict:
-    """Load the Pipfile file contents."""
 
-    # Load the Pipfile file
-    with open(pipfile_path, "r", encoding="utf-8") as toml_file:
+def _parse_pep508(spec: str) -> tuple:
+    """Parse a PEP 508 dep string into (name, {version, extras}-or-string)."""
+    match = _PEP508_RE.match(spec.strip())
+    if not match:
+        return spec.strip(), ""
+    name, extras_str, version = match.groups()
+    version = version.strip() or ""
+    if extras_str:
+        extras = [e.strip() for e in extras_str.split(",")]
+        return name, {"version": version, "extras": extras}
+    return name, version
+
+
+def load_pyproject(pyproject_path: str = "./pyproject.toml") -> dict:
+    """Load runtime + dev dependencies from pyproject.toml as a Pipfile-shaped dict."""
+
+    with open(pyproject_path, "r", encoding="utf-8") as toml_file:
         toml_data = toml.load(toml_file)
 
-    # Get the [dev-packages] section
-    dependencies = toml_data.get("dev-packages", {})
-    dependencies.update(toml_data.get("packages", {}))
+    dependencies: Dict[str, Any] = {}
+    for spec in toml_data.get("project", {}).get("dependencies", []):
+        name, value = _parse_pep508(spec)
+        dependencies[name] = value
+    for group_deps in toml_data.get("dependency-groups", {}).values():
+        for spec in group_deps:
+            name, value = _parse_pep508(spec)
+            dependencies[name] = value
 
     return dependencies
 
@@ -92,7 +112,7 @@ def warnings(listed_package_dependencies: dict, new_package_dependencies: dict) 
         if key in ["open-aea-test-autonomy"]:
             continue
         if key not in listed_package_dependencies:
-            print(f"Package {key} not found in Pipfile")
+            print(f"Package {key} not found in pyproject.toml")
             sys.exit(1)
         if (
             key in listed_package_dependencies
@@ -105,7 +125,7 @@ def warnings(listed_package_dependencies: dict, new_package_dependencies: dict) 
             and value != listed_package_dependencies[key]
         ):
             print(
-                f"Package {key} has version {listed_package_dependencies[key]} in Pipfile and {value} in packages."
+                f"Package {key} has version {listed_package_dependencies[key]} in pyproject.toml and {value} in packages."
             )
             sys.exit(1)
 
@@ -189,7 +209,7 @@ def check_for_no_changes(
 if __name__ == "__main__":
     update = len(sys.argv[1:]) > 0
     package_dependencies = get_package_dependencies()
-    listed_package_dependencies_ = load_pipfile()
+    listed_package_dependencies_ = load_pyproject()
     warnings(listed_package_dependencies_, package_dependencies)
     update_tox_ini(listed_package_dependencies_)
     if not update and not check_for_no_changes():

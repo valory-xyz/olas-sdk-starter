@@ -67,23 +67,20 @@ common-checks-2:
 .PHONY: all-checks
 all-checks: clean security generators common-checks-1 common-checks-2
 
-v := $(shell pip -V | grep virtualenvs)
-
 .PHONY: new_env
 new_env: clean
-	if [ ! -z "$(which svn)" ];\
+	if [ ! -z "$(shell which svn)" ];\
 	then\
 		echo "The development setup requires SVN, exit";\
 		exit 1;\
 	fi;\
 
-	if [ -z "$v" ];\
+	if [ -z "$$VIRTUAL_ENV" ];\
 	then\
-		pipenv --rm;\
-		pipenv --clear;\
-		pipenv --python 3.14;\
-		pipenv install --dev;\
-		echo "Enter virtual environment with all development dependencies now: 'pipenv shell'.";\
+		rm -rf .venv;\
+		uv venv --python 3.14 .venv;\
+		uv sync --all-groups;\
+		echo "Enter virtual environment with all development dependencies now: 'source .venv/bin/activate'.";\
 	else\
-		echo "In a virtual environment! Exit first: 'exit'.";\
+		echo "In a virtual environment! Exit first: 'deactivate'.";\
 	fi
