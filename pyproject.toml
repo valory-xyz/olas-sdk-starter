@@ -6,7 +6,7 @@ license = "Apache-2.0"
 requires-python = ">=3.10,<3.15"
 readme = "README.md"
 dependencies = [
-    "open-autonomy[all]==0.21.21",
+    "open-autonomy[all]==0.21.22",
 ]
 
 [dependency-groups]
