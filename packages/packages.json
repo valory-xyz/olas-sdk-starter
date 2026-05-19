@@ -1,7 +1,7 @@
 {
     "dev": {
-        "agent/valory/olas_hello_world/0.1.0": "bafybeifkcuxpgqtptb3opnxhna6jdtpyiq4amca2kn2su3iiojxhsjy6um",
-        "service/valory/olas_hello_world/0.1.0": "bafybeihwjou2itvo7vtmj2gnmfn3il3kfhjgn4zxvbzdftqjvhuxcfqiki"
+        "agent/valory/olas_hello_world/0.1.0": "bafybeid2e6c22mbiua53krb6mn7baolgaroigqv6bqq3ih6exvymttes7a",
+        "service/valory/olas_hello_world/0.1.0": "bafybeidrsxazl4ccfabt3tpqm2wax4jahti5rn5nuti35dzw5hjsfuwk2m"
     },
     "third_party": {
         "protocol/valory/abci/0.1.0": "bafybeiak4pwac3pwjtd7weskxdhkrcopckr32vtazfbuteu6yqjkwarpte",
@@ -12,14 +12,14 @@
         "protocol/valory/ipfs/0.1.0": "bafybeibz5xqhxdbuvba7nuw2w6ardjermtcoqercopnypdplnaekf3joam",
         "protocol/valory/ledger_api/1.0.0": "bafybeiecq56phjfws36rgrefw6niyo4ezesloodsfis647mpm5ygqo4ysi",
         "protocol/valory/acn/1.1.0": "bafybeiea66z4k6cgcazxd6qzvnkllulyjzbnxufkoenge7qzh4qfogrvoa",
-        "contract/valory/service_registry/0.1.0": "bafybeidjbv3oywzzpdxztmy6sum3zjfnnsz6nnyajoou27jxgnsuenkfyi",
+        "contract/valory/service_registry/0.1.0": "bafybeiccha6qwov4pqsnnhnprldppaqlb7djcujcqqlmtgbukq4a5fmvvq",
         "connection/valory/p2p_libp2p_client/0.1.0": "bafybeielj3jso3wvrarp5n5rq7llpw4vgxybqiyensgjalb5ubfiawwhhu",
-        "connection/valory/ledger/0.19.0": "bafybeia7ug4lrctgfwbq7dozqf5nvjqonot7uhtnlhdjidx5qipgy5743m",
+        "connection/valory/ledger/0.19.0": "bafybeicynh5l5f5f5jpx72qwzis7jvmxk5p4eqltk32uxbj2pgu2x4rqz4",
         "connection/valory/abci/0.1.0": "bafybeibcpvyteijct4rz3zl63sn5zwuiwtn6gt6guvr5gufko4332ybgcu",
         "connection/valory/http_client/0.23.0": "bafybeihel6sg2yayxu7lqygaswdgciaxpqrgsbl5rwx74c6znu5qz2edd4",
-        "connection/valory/ipfs/0.1.0": "bafybeib3ydb7c2gexxryuv4q4jhcjmhm4viqsmxz42knkftudbki2244ta",
-        "skill/valory/test_abci/0.1.0": "bafybeigfktyoet6b7wkbox3eu44l7n6tge263gjxz2gspjdqph3zzkjqmi",
+        "connection/valory/ipfs/0.1.0": "bafybeicxrwakpakexuixxp6yo25sosikrjs4mvzfvzklpqk5fa3yy3hh5a",
+        "skill/valory/test_abci/0.1.0": "bafybeidj3l2ptuuvmodub4ymin3doajfch73r7lurzhq3ffw626db3wfye",
         "skill/valory/abstract_abci/0.1.0": "bafybeib5qjkpfsxjcur4asube6kctmy2xsrg2hzcele2tmvsstula4lt54",
-        "skill/valory/abstract_round_abci/0.1.0": "bafybeifkpsljgwqlrnvaqbinndrpb6ihipmkquggw63adjtjaxmaz4haqu"
+        "skill/valory/abstract_round_abci/0.1.0": "bafybeibvbfkmkqjidukhkzzz7nd33gna64hjhcn3blon5xcleilbt63zn4"
     }
 }
