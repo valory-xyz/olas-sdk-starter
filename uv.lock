@@ -1718,6 +1718,7 @@ name = "olas-sdk-starter"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "open-aea-helpers" },
     { name = "open-autonomy", extra = ["all"] },
 ]
 
@@ -1727,7 +1728,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "open-autonomy", extras = ["all"], specifier = "==0.21.22" }]
+requires-dist = [
+    { name = "open-aea-helpers", specifier = "==0.21.22" },
+    { name = "open-autonomy", extras = ["all"], specifier = "==0.21.22" },
+]
 
 [package.metadata.requires-dev]
 dev = [{ name = "tomte", extras = ["tests", "cli"], git = "https://github.com/valory-xyz/tomte.git?rev=v0.7.0" }]
@@ -1765,6 +1769,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/f4/fc/72ed0cbd9f161570d1216416c8641118d955c6adeda5bef9316363ad7d1e/open_aea_cli_ipfs-2.2.6.tar.gz", hash = "sha256:00f2e8faf57f60e5cf988ce4f507c7f4cf723720fb5d78e5853a5a1e095fdc4f", size = 30207, upload-time = "2026-05-14T16:30:15.066Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/6b/df1693abc38dcf7c8c54796b92840dc09260eebff387f7cc776060e1669b/open_aea_cli_ipfs-2.2.6-py3-none-any.whl", hash = "sha256:3fefd1e5521530273f5f4c1d1fe67716d38be143d0191a3e1aef8d688a17162a", size = 24732, upload-time = "2026-05-14T16:30:14.156Z" },
+]
+
+[[package]]
+name = "open-aea-helpers"
+version = "0.21.22"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "open-autonomy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8a/46/8db346821041f301f63ea4d2519c04edb2631c4805d43fa94f12e84165b2/open_aea_helpers-0.21.22.tar.gz", hash = "sha256:c277b577a3a7ec94d5c0ed9f9e6281f8b75365207f11746026ef90635a11a507", size = 28468, upload-time = "2026-05-18T08:02:52.486Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/84/d3/3cf94fe71871ee79186072729081550a00821e359650f189d6723d10f8e9/open_aea_helpers-0.21.22-py3-none-any.whl", hash = "sha256:3d08a2c02921f3e7ff68a6036afa4efbe614fa47030fd4135c1b7569fb27d35e", size = 38920, upload-time = "2026-05-18T08:02:51.652Z" },
 ]
 
 [[package]]
