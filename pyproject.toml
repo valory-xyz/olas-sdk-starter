@@ -12,7 +12,38 @@ dependencies = [
 [dependency-groups]
 dev = [
     "tomte[tests,cli]==0.7.0",
+    "open-aea-helpers==0.21.22",
 ]
+
+[tool.tomte]
+# Declared explicitly because no top-level `open-aea-ledger-*` pin
+# exists in [project].dependencies (open-aea comes in transitively via
+# `open-autonomy[all]==0.21.22`).
+open_aea_version = "2.2.6"
+tomte_dep_pin = "==0.7.0"
+# Lint scope — load-bearing for this starter. `scripts/__init__.py` is
+# kept as an intentional empty placeholder; deleting it will break
+# every lint env.
+#
+# Two reasons we can't use `packages/valory` (the otherwise-natural
+# dev-owned tree) here:
+#   1. Auto-derive (`tomte/tools/packages_json.py:dev_package_paths`)
+#      returns empty for this starter — packages.json `dev` lists only
+#      `agent` and `service` types, neither in tomte's `_LINTABLE_TYPES`
+#      (skill/connection/contract/custom).
+#   2. Empty SRC is not a no-op in canonical lint envs: `black --check `
+#      with no path exits non-zero ("One of 'SRC' or 'code' is required").
+#   3. Canonical `[testenv:pylint]` hardcodes
+#      `--ignore-paths="^packages/valory/.*$"`, so pointing this at
+#      any path under `packages/valory/` silently turns pylint into a
+#      no-op.
+#
+# When a downstream fork adds a custom skill to packages.json `dev`,
+# this override can be dropped and auto-derive picks the skill up.
+service_specific_packages = "scripts"
+# `check_handlers_ignores` intentionally omitted — every skill in this
+# starter is third-party (vendored from open-autonomy / open-aea via
+# packages/packages.json) so the wrapper's auto-derive picks them up.
 
 [tool.uv]
 package = false

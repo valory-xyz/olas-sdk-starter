@@ -35,34 +35,28 @@ clean-cache:
 # bandit: security linter
 .PHONY: security
 security:
-	tox -p -e safety -e bandit
-	tox -e gitleaks
+	tomte tox -p -e safety -e bandit
+	tomte tox -e gitleaks
 
 # generate abci docstrings
-# check copyright
-# generate latest hashes for updated packages
-# generate docs for updated packages
-# fix hashes in docs
+# format copyright headers in source
+# regenerate package hashes
 .PHONY: generators
 generators: clean-cache
-	tox -e abci-docstrings
-	tox -e fix-copyright
-	tox -e lock-packages
-	tox -e generate-api-documentation
-	tox -e fix-doc-hashes
+	tomte tox -e abci-docstrings
+	tomte format-copyright --author valory
+	uv run autonomy packages lock
 
 .PHONY: common-checks-1
 common-checks-1:
-	tox -p -e check-copyright -e check-hash -e check-packages
+	tomte check-copyright --author valory
+	tomte tox -p -e check-hash -e check-packages
 
 .PHONY: common-checks-2
 common-checks-2:
-	tox -e check-api-docs
-	tox -e check-abci-docstrings
-	tox -e check-abciapp-specs
-	tox -e check-handlers
-	tox -e check-dialogues
-	tox -e check-doc-links-hashes
+	tomte tox -e check-abci-docstrings
+	tomte tox -e check-abciapp-specs
+	tomte tox -e check-handlers
 
 .PHONY: all-checks
 all-checks: clean security generators common-checks-1 common-checks-2
