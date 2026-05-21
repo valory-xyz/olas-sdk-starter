@@ -11,8 +11,24 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "tomte[tests,cli]==0.7.0",
+    "tomte[tests,cli] @ git+https://github.com/valory-xyz/tomte.git@v0.7.0",
 ]
+
+[tool.tomte]
+# Declared explicitly because no top-level `open-aea-ledger-*` pin
+# exists in [project].dependencies (open-aea comes in transitively via
+# `open-autonomy[all]==0.21.22`).
+open_aea_version = "2.2.6"
+tomte_dep_pin = " @ git+https://github.com/valory-xyz/tomte.git@v0.7.0"
+# Lint scope. Auto-derive (from packages.json dev section) returns
+# empty for a pure-vendored starter — only `agent` and `service` are
+# under `dev`, and `_LINTABLE_TYPES` covers skill/connection/contract/
+# custom. When a downstream fork adds a custom skill, this can be
+# dropped to let auto-derive pick it up.
+service_specific_packages = "scripts"
+# `check_handlers_ignores` intentionally omitted — every skill in this
+# starter is third-party (vendored from open-autonomy / open-aea via
+# packages/packages.json) so the wrapper's auto-derive picks them up.
 
 [tool.uv]
 package = false
