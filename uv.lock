@@ -1734,7 +1734,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "tomte", extras = ["tests", "cli"], git = "https://github.com/valory-xyz/tomte.git?rev=v0.7.0" }]
+dev = [{ name = "tomte", extras = ["tests", "cli"], specifier = "==0.7.0" }]
 
 [[package]]
 name = "open-aea"
@@ -2920,7 +2920,11 @@ wheels = [
 [[package]]
 name = "tomte"
 version = "0.7.0"
-source = { git = "https://github.com/valory-xyz/tomte.git?rev=v0.7.0#0819eea387c622cc53b398a2d3ea86e94a55cf82" }
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/aa/da37ab224e5c244df1814da6a33c48a7f17c4a26675b5beadff66412ad20/tomte-0.7.0.tar.gz", hash = "sha256:863e2144aefb13dd988b1c6650167469a82945aa445320d4a4ade41b2edf75e5", size = 45004, upload-time = "2026-05-01T14:56:29.879Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8d/17/2c04fb63831600594ee173243ea470abcab04a325387f88822fbb720eb05/tomte-0.7.0-py3-none-any.whl", hash = "sha256:b127c7a14ca07a89d5fbb2c82b9d9ba581f13aee4f082a98261c794e589e1ab4", size = 53070, upload-time = "2026-05-01T14:56:28.539Z" },
+]
 
 [package.optional-dependencies]
 cli = [
