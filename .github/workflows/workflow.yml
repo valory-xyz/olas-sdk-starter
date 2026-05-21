@@ -32,14 +32,14 @@ jobs:
     - name: Install dependencies
       run: uv sync --all-groups -v
 
-  copyright_doc_and_dependencies_check:
+  copyright_and_liccheck:
     continue-on-error: False
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.10.9"]
+        python-version: ["3.10"]
 
     timeout-minutes: 30
 
@@ -56,19 +56,12 @@ jobs:
         sudo apt-get update --fix-missing
         sudo apt-get autoremove
         sudo apt-get autoclean
-        uv pip install --system tomte[tox,cli]==0.7.0 tox-uv
+        uv pip install --system 'tomte[tox,cli] @ git+https://github.com/valory-xyz/tomte.git@v0.7.0' tox-uv
         uv pip install --system --upgrade setuptools
     - name: Check copyright headers
-      run: tomte format-copyright --author valory --author fetchai
+      run: tomte check-copyright --author valory --author fetchai
     - name: License compatibility check
-      run: tox -e liccheck
-    # - name: Check docs
-    #   run: tox -e check-api-docs
-    # - name: Check doc links
-    #   run: tomte check-doc-links --http-skips http://host.docker.internal:8545 --http-skips http://www.fipa.org/repository/ips.php3 --url-skips "https://gateway.autonolas.tech/ipfs/<hash>," --url-skips "https://github.com/valory-xyz/open-autonomy/trunk/infrastructure" --url-skips "http://host.docker.internal:8545" --url-skips "https://github.com/valory-xyz/open-operator"
-    # TODO: Investigate and fix - Package open-aea-ledger-cosmos has version ==1.38.0 in pyproject.toml and  in packages.
-    # - name: Check dependencies
-    #   run: tox -e check-dependencies
+      run: tomte tox -e liccheck
 
   linter_checks:
     continue-on-error: False
@@ -92,28 +85,21 @@ jobs:
         sudo apt-get update --fix-missing
         sudo apt-get autoremove
         sudo apt-get autoclean
-        uv pip install --system tomte[tox,cli]==0.7.0 tox-uv
+        uv pip install --system 'tomte[tox,cli] @ git+https://github.com/valory-xyz/tomte.git@v0.7.0' tox-uv
         uv pip install --system --upgrade setuptools
     - name: Security checks
-      run: |
-        tox -p -e bandit -e safety
+      run: tomte tox -p -e bandit -e safety
     - name: Code style check
-      run: |
-        tox -e black-check
-        tox -e isort-check
-        tox -e flake8
-        tox -e vulture
-        tox -e darglint
+      run: tomte tox -p -e black-check -e isort-check -e flake8 -e darglint
     - name: Static type check
-      run: tox -e mypy
+      run: tomte tox -e mypy
     - name: Pylint
-      run: tox -e pylint
+      run: tomte tox -e pylint
     - name: AbciApp consistency checks
       run: |
-        tox -e check-abci-docstrings
-        tox -e check-abciapp-specs
-        tox -e check-handlers
-        tox -e check-dialogues
+        tomte tox -e check-abci-docstrings
+        tomte tox -e check-abciapp-specs
+        tomte tox -e check-handlers
 
   scan:
     name: gitleaks
@@ -130,15 +116,15 @@ jobs:
           wget https://github.com/zricethezav/gitleaks/releases/download/v8.10.1/gitleaks_8.10.1_linux_x64.tar.gz
           tar -xzf gitleaks_8.10.1_linux_x64.tar.gz
           sudo install gitleaks /usr/bin
-          uv pip install --system tomte[tox,cli]==0.7.0 tox-uv
-          tox -e gitleaks
+          uv pip install --system 'tomte[tox,cli] @ git+https://github.com/valory-xyz/tomte.git@v0.7.0' tox-uv
+          tomte tox -e gitleaks
 
   all_checks_passed:
     name: All checks passed
     if: always()
     needs:
       - lock_check
-      - copyright_doc_and_dependencies_check
+      - copyright_and_liccheck
       - linter_checks
       - scan
     runs-on: ubuntu-latest
