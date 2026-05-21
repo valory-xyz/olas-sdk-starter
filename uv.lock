@@ -1718,23 +1718,23 @@ name = "olas-sdk-starter"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "open-aea-helpers" },
     { name = "open-autonomy", extra = ["all"] },
 ]
 
 [package.dev-dependencies]
 dev = [
+    { name = "open-aea-helpers" },
     { name = "tomte", extra = ["cli", "tests"] },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "open-aea-helpers", specifier = "==0.21.22" },
-    { name = "open-autonomy", extras = ["all"], specifier = "==0.21.22" },
-]
+requires-dist = [{ name = "open-autonomy", extras = ["all"], specifier = "==0.21.22" }]
 
 [package.metadata.requires-dev]
-dev = [{ name = "tomte", extras = ["tests", "cli"], specifier = "==0.7.0" }]
+dev = [
+    { name = "open-aea-helpers", specifier = "==0.21.22" },
+    { name = "tomte", extras = ["tests", "cli"], specifier = "==0.7.0" },
+]
 
 [[package]]
 name = "open-aea"
