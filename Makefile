@@ -44,12 +44,12 @@ security:
 .PHONY: generators
 generators: clean-cache
 	tomte tox -e abci-docstrings
-	tomte format-copyright --author valory --author fetchai
+	tomte format-copyright --author valory
 	uv run autonomy packages lock
 
 .PHONY: common-checks-1
 common-checks-1:
-	tomte check-copyright --author valory --author fetchai
+	tomte check-copyright --author valory
 	tomte tox -p -e check-hash -e check-packages
 
 .PHONY: common-checks-2
