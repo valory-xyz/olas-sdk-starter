@@ -25,9 +25,9 @@ logging_config:
   version: 1
 dependencies:
   open-aea-ledger-cosmos:
-    version: ==2.2.6
+    version: ==2.2.7
   open-aea-ledger-ethereum:
-    version: ==2.2.6
+    version: ==2.2.7
 default_connection: null
 ---
 public_id: valory/ledger:0.19.0
